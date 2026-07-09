@@ -22,10 +22,10 @@
         <a class="logo" href="#inicio" aria-label="tüdd inicio">tüdd</a>
         <nav class="main-nav" id="mainNav" aria-label="Navegacion principal">
           <a href="#consultorio">consultorio</a>
-          <a href="#doctoras">doctoras</a>
+          <a href="#nosotros">nosotros</a>
           <a href="#confianza">reseñas</a>
           <a href="#contacto">contacto</a>
-          <button class="btn btn-outline" type="button" data-open-booking="valeria">agendar cita</button>
+          <button class="btn btn-outline" type="button" data-open-booking="elena">agendar cita</button>
         </nav>
         <button class="menu-toggle" id="menuToggle" type="button" aria-label="Abrir menu">
           <span></span>
@@ -41,7 +41,6 @@
         <div class="hero-grain"></div>
 
         <div class="wrap hero-inner" id="heroInner">
-          <span class="hero-eyebrow">tüdd · consultorio dental</span>
           <h1>Antes de un diagnóstico, <em>una conversación.</em></h1>
           <p class="hero-lede">
             Cuéntanos qué te trae por aquí y te orientamos hacia una de las cuatro doctoras
@@ -49,21 +48,13 @@
           </p>
 
           <section class="assistant-embed" id="asistente" aria-label="Asistente de triaje">
-            <div class="thread" id="thread">
-              <p class="line bot">Hola, soy el asistente de tüdd. Puedo ayudarte a encontrar la doctora adecuada.</p>
-            </div>
-            <div class="chip-row" id="chipRow">
-              <button class="chip" type="button" data-msg="Tengo dolor o sensibilidad">dolor o sensibilidad</button>
-              <button class="chip" type="button" data-msg="Quiero mejorar mi sonrisa">mejorar mi sonrisa</button>
-              <button class="chip" type="button" data-msg="Necesito una limpieza o revisión">limpieza o revisión</button>
-              <button class="chip" type="button" data-msg="Es para mi hijo">es para mi hijo</button>
-            </div>
             <div class="ask-line">
               <input id="assistantInput" type="text" placeholder="Escribe lo que sientes o buscas..." />
               <button class="send-btn" id="sendBtn" type="button" aria-label="Enviar">
                 <span>→</span>
               </button>
             </div>
+            <div class="assistant-response" id="assistantResponse" aria-live="polite"></div>
           </section>
         </div>
 
@@ -92,27 +83,47 @@
         </div>
       </section>
 
+      <section class="team-intro" id="nosotros">
+        <div class="wrap team-intro-grid">
+          <div>
+            <span class="eyebrow">el equipo</span>
+            <h2>Nuestro Equipo</h2>
+          </div>
+          <div>
+            <p>
+              tüdd reúne cuatro especialidades bajo un mismo criterio clínico: ortodoncia,
+              estética dental, endodoncia y odontopediatría. Cada doctora ejerce con
+              autonomía, y todas comparten protocolos de higiene, seguimiento y comunicación
+              entre consultorios.
+            </p>
+            <p>
+              Si tu tratamiento requiere más de una especialidad, tus doctoras se coordinan
+              directamente entre ellas - no tienes que ser tú quien explique tu caso dos veces.
+            </p>
+            <a href="#doctoras">conoce a cada especialista →</a>
+          </div>
+        </div>
+      </section>
+
       <section class="doctors" id="doctoras">
         <div class="wrap doctors-head">
           <div>
-            <span class="eyebrow">doctoras</span>
-            <h2>Cada una, una ruta clínica propia.</h2>
+            <span class="eyebrow">el equipo clínico</span>
+            <h2>Cuatro especialidades, un mismo criterio de cuidado</h2>
           </div>
           <p>
-            Elige directamente o deja que el asistente te sugiera por síntomas, intención estética,
-            edad del paciente y urgencia.
+            Elena, Camila, Naomi y Julieta ejercen de forma independiente, con protocolos y
+            estándares compartidos dentro de tüdd.
           </p>
         </div>
-        <div class="carousel-mask" aria-label="Doctoras de tüdd">
-          <div class="carousel-track" id="doctorTrack"></div>
+        <div class="wrap">
+          <div class="doctor-panel" id="doctorTrack" aria-label="Doctoras de tüdd"></div>
         </div>
       </section>
 
       <section class="trust" id="confianza">
+        <div class="trust-bg" aria-hidden="true"></div>
         <div class="wrap trust-grid">
-          <div class="trust-media reveal">
-            <img src="assets/tudd-trust.png" alt="Pacientes sonriendo en ambiente cálido" />
-          </div>
           <div class="trust-copy reveal">
             <span class="eyebrow">confianza</span>
             <h2>Sonrisas reales, seguimiento claro y un trato que baja la ansiedad.</h2>
@@ -120,8 +131,8 @@
               <strong>4.9</strong>
               <span>212 reseñas verificadas</span>
             </div>
-            <div class="review-grid" id="reviewGrid"></div>
           </div>
+          <div class="review-stack" id="reviewGrid" data-parallax-reviews></div>
         </div>
       </section>
 
@@ -131,18 +142,22 @@
             <span class="eyebrow">contacto</span>
             <h2>Visítanos o escríbenos.</h2>
             <div class="contact-list">
-              <div><span>dirección</span><p>Av. Horacio 1855, Polanco<br />Ciudad de México</p></div>
+              <div><span>dirección</span><p>Av Paseo de los Leones 2020, Cumbres 3o. Sector, 64610 Monterrey, N.L.<br />Plaza Altezza piso 1</p></div>
               <div><span>horario</span><p>Lunes a viernes, 9:00 - 19:00<br />Sábados, 9:00 - 14:00</p></div>
               <div><span>contacto</span><p>hola@tudd.mx<br />+52 55 4100 0921</p></div>
             </div>
+            <div class="social-actions">
+              <a class="btn btn-outline" href="https://www.instagram.com/tudd.mx" target="_blank" rel="noreferrer">instagram</a>
+              <a class="btn btn-outline" href="https://wa.me/525541000921" target="_blank" rel="noreferrer">whatsapp</a>
+            </div>
           </div>
           <div class="map-card">
-            <div class="map-grid"></div>
-            <div class="map-pin"></div>
-            <div class="map-label">
-              <strong>tüdd</strong>
-              <span>consultorio dental boutique</span>
-            </div>
+            <iframe
+              title="Mapa de tüdd en Plaza Altezza"
+              src="https://www.google.com/maps?q=Av%20Paseo%20de%20los%20Leones%202020%2C%20Cumbres%203o.%20Sector%2C%2064610%20Monterrey%2C%20N.L.%20Plaza%20Altezza%20piso%201&output=embed"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+            ></iframe>
           </div>
         </div>
       </section>
@@ -157,7 +172,7 @@
         <div>
           <h3>navegación</h3>
           <a href="#consultorio">consultorio</a>
-          <a href="#doctoras">doctoras</a>
+          <a href="#nosotros">nosotros</a>
           <a href="#confianza">reseñas</a>
           <a href="#contacto">contacto</a>
         </div>
@@ -169,12 +184,12 @@
         </div>
         <div>
           <h3>agenda directa</h3>
-          <button class="btn btn-light" type="button" data-open-booking="valeria">abrir agenda</button>
+          <button class="btn btn-light" type="button" data-open-booking="elena">abrir agenda</button>
         </div>
       </div>
       <div class="wrap footer-bottom">
         <span>© 2026 tüdd. Hecho para una consulta más amable.</span>
-        <span>instagram · whatsapp</span>
+        <span><a href="https://www.instagram.com/tudd.mx" target="_blank" rel="noreferrer">instagram</a> · <a href="https://wa.me/525541000921" target="_blank" rel="noreferrer">whatsapp</a></span>
       </div>
     </footer>
 

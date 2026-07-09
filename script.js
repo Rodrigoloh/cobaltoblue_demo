@@ -1,53 +1,57 @@
 const doctors = [
   {
-    id: "valeria",
-    name: "Dra. Valeria Montes",
-    initials: "VM",
-    role: "Diagnóstico integral y prevención",
-    bio: "Primera visita, limpieza, sensibilidad y planes preventivos con una explicación clara.",
-    keywords: ["revision", "revisión", "limpieza", "sensibilidad", "sensible", "rutina", "chequeo", "prevencion", "prevención"]
-  },
-  {
-    id: "ines",
-    name: "Dra. Inés Aranda",
-    initials: "IA",
-    role: "Estética dental",
-    bio: "Blanqueamiento, resinas, carillas y armonía de sonrisa con resultado natural.",
-    keywords: ["blanque", "carilla", "resina", "estetica", "estética", "sonrisa", "mancha", "color", "amarillo"]
+    id: "elena",
+    name: "Dra. Elena Vidal",
+    initials: "EV",
+    role: "Ortodoncia",
+    bio: "Alineación dental, mordida y seguimiento con alineadores o brackets estéticos.",
+    position: "12.5%",
+    keywords: ["ortodoncia", "bracket", "brackets", "alineador", "alinear", "mordida", "chueco", "chuecos", "invisalign"]
   },
   {
     id: "camila",
-    name: "Dra. Camila Rohe",
+    name: "Dra. Camila Rousseau",
     initials: "CR",
-    role: "Rehabilitación y restauraciones",
-    bio: "Dolor al morder, piezas fracturadas, coronas y restauraciones profundas.",
-    keywords: ["dolor", "duele", "fractura", "roto", "corona", "morder", "caries", "urgencia", "conducto"]
+    role: "Estética dental",
+    bio: "Diseño de sonrisa, blanqueamiento, resinas y carillas con enfoque conservador.",
+    position: "37.5%",
+    keywords: ["estetica", "estética", "blanque", "carilla", "resina", "sonrisa", "mancha", "color", "amarillo"]
   },
   {
-    id: "sofia",
-    name: "Dra. Sofía Neri",
-    initials: "SN",
-    role: "Odontología familiar",
-    bio: "Niños, adolescentes, ansiedad dental, seguimiento familiar y consultas suaves.",
-    keywords: ["hijo", "hija", "niño", "niña", "nino", "nina", "ansiedad", "miedo", "familia", "adolescente"]
+    id: "naomi",
+    name: "Dra. Naomi Serrano",
+    initials: "NS",
+    role: "Endodoncia",
+    bio: "Dolor, urgencias, sensibilidad profunda y tratamientos de conducto.",
+    position: "62.5%",
+    keywords: ["dolor", "duele", "caries", "conducto", "endodoncia", "urgencia", "sensibilidad", "nervio", "absceso"]
+  },
+  {
+    id: "julieta",
+    name: "Dra. Julieta Fontán",
+    initials: "JF",
+    role: "Odontopediatría",
+    bio: "Primeras visitas, prevención y tratamiento dental para niñas, niños y adolescentes.",
+    position: "87.5%",
+    keywords: ["hijo", "hija", "niño", "niña", "nino", "nina", "pediatr", "bebé", "bebe", "infantil", "adolescente"]
   }
 ];
 
 const reviews = [
   {
-    name: "Mariana L.",
-    meta: "Diagnóstico inicial",
-    text: "Llegué sin saber con quién agendar. El asistente me llevó directo a la consulta correcta."
+    name: "Renata M.",
+    meta: "Ortodoncia",
+    text: "El proceso se sintió acompañado desde el primer día. Me explicaron tiempos, opciones y seguimiento sin prisa."
   },
   {
-    name: "Rocío G.",
-    meta: "Estética dental",
-    text: "El espacio se siente privado, limpio y cero intimidante. Todo fue puntual y muy bien explicado."
+    name: "Óscar T.",
+    meta: "Urgencia",
+    text: "Llegué con dolor y me atendieron con muchísima calma. Entendí qué estaba pasando antes de tomar cualquier decisión."
   },
   {
-    name: "Daniel P.",
-    meta: "Rehabilitación",
-    text: "Me explicaron opciones sin presión. Terminé con un plan que sí entendí y pude decidir tranquilo."
+    name: "Paula G.",
+    meta: "Odontopediatría",
+    text: "Mi hija entró nerviosa y salió tranquila. La doctora supo convertir la consulta en algo amable."
   }
 ];
 
@@ -57,24 +61,26 @@ const menuToggle = document.querySelector("#menuToggle");
 const mainNav = document.querySelector("#mainNav");
 const heroPhoto = document.querySelector(".hero-photo");
 const heroInner = document.querySelector("#heroInner");
-const thread = document.querySelector("#thread");
-const chipRow = document.querySelector("#chipRow");
 const assistantInput = document.querySelector("#assistantInput");
+const assistantResponse = document.querySelector("#assistantResponse");
 const sendBtn = document.querySelector("#sendBtn");
 const doctorTrack = document.querySelector("#doctorTrack");
 const reviewGrid = document.querySelector("#reviewGrid");
 const modalOverlay = document.querySelector("#modalOverlay");
 const modalClose = document.querySelector("#modalClose");
 const modalContent = document.querySelector("#modalContent");
+const reviewStack = document.querySelector("[data-parallax-reviews]");
 
 let bookingState = {};
 
 function renderDoctors() {
-  const cards = doctors
+  doctorTrack.innerHTML = doctors
     .map(
       (doctor, index) => `
         <article class="doctor-card">
-          <div class="doctor-art"><span>${doctor.initials}</span></div>
+          <div class="doctor-art" style="--doctor-position: ${doctor.position}">
+            <img src="public/assets/tudd-doctors-sheet.png" alt="${doctor.name}" />
+          </div>
           <div class="doctor-body">
             <span class="doctor-index">0${index + 1}</span>
             <div class="doctor-name">${doctor.name}</div>
@@ -86,8 +92,6 @@ function renderDoctors() {
       `
     )
     .join("");
-
-  doctorTrack.innerHTML = cards + cards;
 }
 
 function renderReviews() {
@@ -104,36 +108,6 @@ function renderReviews() {
     .join("");
 }
 
-function addLine(text, who) {
-  const line = document.createElement("p");
-  line.className = `line ${who}`;
-  line.textContent = text;
-  thread.appendChild(line);
-  thread.scrollTop = thread.scrollHeight;
-  return line;
-}
-
-function showTyping() {
-  const line = document.createElement("p");
-  line.className = "line bot typing";
-  line.innerHTML = "<span></span><span></span><span></span>";
-  thread.appendChild(line);
-  thread.scrollTop = thread.scrollHeight;
-  return line;
-}
-
-function addSuggestion(doctor) {
-  const line = document.createElement("p");
-  line.className = "line suggestion-line";
-  line.innerHTML = `
-    <strong>${doctor.name}</strong>
-    <span>${doctor.role}</span>
-    <button type="button" data-open-booking="${doctor.id}">agendar →</button>
-  `;
-  thread.appendChild(line);
-  thread.scrollTop = thread.scrollHeight;
-}
-
 function matchDoctor(text) {
   const normalized = text.toLowerCase();
   return doctors.find((doctor) => doctor.keywords.some((keyword) => normalized.includes(keyword))) || doctors[0];
@@ -143,17 +117,12 @@ function handleTriage(value) {
   const text = value.trim();
   if (!text) return;
 
-  addLine(text, "user");
+  const doctor = matchDoctor(text);
+  assistantResponse.innerHTML = `
+    Te sugerimos empezar con <strong>${doctor.name}</strong>, ${doctor.role.toLowerCase()}.
+    <button type="button" data-open-booking="${doctor.id}">Agendar →</button>
+  `;
   assistantInput.value = "";
-  chipRow.style.display = "none";
-  const typing = showTyping();
-
-  window.setTimeout(() => {
-    typing.remove();
-    const doctor = matchDoctor(text);
-    addLine(`Por lo que me cuentas, empezaría con ${doctor.name.replace("Dra. ", "")}: ${doctor.role.toLowerCase()}.`, "bot");
-    addSuggestion(doctor);
-  }, 680);
 }
 
 function nextDays(count) {
@@ -269,14 +238,22 @@ function submitBooking() {
   `;
 }
 
-window.addEventListener("scroll", () => {
+function onScroll() {
   const y = window.scrollY;
   const factor = Math.min(y / window.innerHeight, 1);
   siteHeader.classList.toggle("scrolled", y > 30);
   heroPhoto.style.transform = `translateY(${y * 0.12}px) scale(${1 + factor * 0.03})`;
   heroInner.style.transform = `translateY(${factor * 34}px)`;
   heroInner.style.opacity = `${1 - factor * 0.72}`;
-});
+
+  if (reviewStack) {
+    const rect = reviewStack.getBoundingClientRect();
+    const offset = (rect.top - window.innerHeight * 0.5) * -0.08;
+    reviewStack.style.transform = `translateY(${Math.max(-34, Math.min(34, offset))}px)`;
+  }
+}
+
+window.addEventListener("scroll", onScroll, { passive: true });
 
 menuToggle.addEventListener("click", () => {
   menuToggle.classList.toggle("open");
@@ -293,10 +270,6 @@ mainNav.querySelectorAll("a").forEach((link) => {
 sendBtn.addEventListener("click", () => handleTriage(assistantInput.value));
 assistantInput.addEventListener("keydown", (event) => {
   if (event.key === "Enter") handleTriage(assistantInput.value);
-});
-
-chipRow.querySelectorAll(".chip").forEach((chip) => {
-  chip.addEventListener("click", () => handleTriage(chip.dataset.msg));
 });
 
 document.addEventListener("click", (event) => {
