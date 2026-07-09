@@ -4,6 +4,7 @@ const doctors = [
     name: "Dra. Elena Vidal",
     initials: "EV",
     role: "Ortodoncia",
+    site: "elena.html",
     bio: "Alineación dental, mordida y seguimiento con alineadores o brackets estéticos.",
     position: "12.5%",
     keywords: ["ortodoncia", "bracket", "brackets", "alineador", "alinear", "mordida", "chueco", "chuecos", "invisalign"]
@@ -13,6 +14,7 @@ const doctors = [
     name: "Dra. Camila Rousseau",
     initials: "CR",
     role: "Estética dental",
+    site: "camila.html",
     bio: "Diseño de sonrisa, blanqueamiento, resinas y carillas con enfoque conservador.",
     position: "37.5%",
     keywords: ["estetica", "estética", "blanque", "carilla", "resina", "sonrisa", "mancha", "color", "amarillo"]
@@ -22,6 +24,7 @@ const doctors = [
     name: "Dra. Naomi Serrano",
     initials: "NS",
     role: "Endodoncia",
+    site: "naomi.html",
     bio: "Dolor, urgencias, sensibilidad profunda y tratamientos de conducto.",
     position: "62.5%",
     keywords: ["dolor", "duele", "caries", "conducto", "endodoncia", "urgencia", "sensibilidad", "nervio", "absceso"]
@@ -31,6 +34,7 @@ const doctors = [
     name: "Dra. Julieta Fontán",
     initials: "JF",
     role: "Odontopediatría",
+    site: "julieta.html",
     bio: "Primeras visitas, prevención y tratamiento dental para niñas, niños y adolescentes.",
     position: "87.5%",
     keywords: ["hijo", "hija", "niño", "niña", "nino", "nina", "pediatr", "bebé", "bebe", "infantil", "adolescente"]
@@ -74,24 +78,64 @@ const reviewStack = document.querySelector("[data-parallax-reviews]");
 let bookingState = {};
 
 function renderDoctors() {
-  doctorTrack.innerHTML = doctors
-    .map(
-      (doctor, index) => `
-        <article class="doctor-card">
-          <div class="doctor-art" style="--doctor-position: ${doctor.position}">
-            <img src="public/assets/tudd-doctors-sheet.png" alt="${doctor.name}" />
-          </div>
-          <div class="doctor-body">
-            <span class="doctor-index">0${index + 1}</span>
-            <div class="doctor-name">${doctor.name}</div>
-            <div class="doctor-role">${doctor.role}</div>
-            <p class="doctor-bio">${doctor.bio}</p>
-            <button class="doctor-cta" type="button" data-open-booking="${doctor.id}">agendar con ella</button>
-          </div>
-        </article>
-      `
-    )
-    .join("");
+  doctorTrack.innerHTML = `
+    <div class="team-stage" data-active="">
+      <img class="team-sheet" src="public/assets/tudd-doctors-sheet.png" alt="Equipo clínico tüdd" />
+      ${doctors
+        .map(
+          (doctor, index) => `
+            <a
+              class="team-hotspot"
+              href="${doctor.site}"
+              data-doctor-zone="${doctor.id}"
+              style="--zone-left: ${index * 25}%;"
+              aria-label="Ver micrositio de ${doctor.name}"
+            ></a>
+            <span class="team-dim" data-dim-zone="${doctor.id}" style="--zone-left: ${index * 25}%;"></span>
+          `
+        )
+        .join("")}
+    </div>
+    <div class="team-name-row">
+      ${doctors
+        .map(
+          (doctor) => `
+            <a class="team-name" href="${doctor.site}" data-doctor-name="${doctor.id}">
+              <span>${doctor.name.replace("Dra. ", "")}</span>
+              <small>${doctor.role}</small>
+            </a>
+          `
+        )
+        .join("")}
+    </div>
+  `;
+
+  const stage = doctorTrack.querySelector(".team-stage");
+  const interactiveItems = doctorTrack.querySelectorAll("[data-doctor-zone], [data-doctor-name]");
+
+  interactiveItems.forEach((item) => {
+    const id = item.dataset.doctorZone || item.dataset.doctorName;
+    item.addEventListener("mouseenter", () => setActiveDoctor(id));
+    item.addEventListener("focus", () => setActiveDoctor(id));
+    item.addEventListener("mouseleave", clearActiveDoctor);
+    item.addEventListener("blur", clearActiveDoctor);
+  });
+
+  function setActiveDoctor(id) {
+    stage.dataset.active = id;
+    doctorTrack.querySelectorAll("[data-doctor-name]").forEach((item) => {
+      item.classList.toggle("active", item.dataset.doctorName === id);
+    });
+    doctorTrack.querySelectorAll("[data-dim-zone]").forEach((item) => {
+      item.classList.toggle("dimmed", item.dataset.dimZone !== id);
+    });
+  }
+
+  function clearActiveDoctor() {
+    stage.dataset.active = "";
+    doctorTrack.querySelectorAll("[data-doctor-name]").forEach((item) => item.classList.remove("active"));
+    doctorTrack.querySelectorAll("[data-dim-zone]").forEach((item) => item.classList.remove("dimmed"));
+  }
 }
 
 function renderReviews() {

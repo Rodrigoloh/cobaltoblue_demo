@@ -468,104 +468,122 @@ section:not(.hero) {
 }
 
 .doctor-panel {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 14px;
+  overflow: visible;
 }
 
-.doctor-card {
-  min-width: 0;
-  overflow: hidden;
-  border: 1px solid rgba(251, 245, 234, 0.13);
-  border-radius: 22px;
-  background: rgba(251, 245, 234, 0.05);
-  transition: border-color 0.25s ease, transform 0.25s var(--ease);
-}
-
-.doctor-card:hover {
-  border-color: rgba(251, 245, 234, 0.32);
-  transform: translateY(-4px);
-}
-
-.doctor-art {
+.team-stage {
   position: relative;
-  min-height: clamp(270px, 30vw, 430px);
-  display: grid;
-  align-items: end;
   overflow: hidden;
+  min-height: clamp(420px, 48vw, 680px);
+  border-radius: 0;
   background:
-    radial-gradient(circle at 50% 52%, rgba(251, 245, 234, 0.28), transparent 45%),
-    linear-gradient(135deg, rgba(251, 245, 234, 0.08), rgba(251, 245, 234, 0.02));
+    radial-gradient(circle at 20% 18%, rgba(251, 245, 234, 0.24), transparent 34%),
+    radial-gradient(circle at 78% 22%, rgba(184, 83, 47, 0.16), transparent 32%),
+    linear-gradient(135deg, rgba(251, 245, 234, 0.12), rgba(251, 245, 234, 0.02) 42%, rgba(184, 83, 47, 0.12));
 }
 
-.doctor-art::after {
+.team-stage::before {
   content: "";
   position: absolute;
-  inset: 18px;
-  border: 1px solid rgba(251, 245, 234, 0.12);
-  border-radius: 999px 999px 22px 22px;
+  inset: 9% 2% 0;
+  border-top: 1px solid rgba(251, 245, 234, 0.1);
+  pointer-events: none;
 }
 
-.doctor-art img {
-  position: relative;
+.team-sheet {
+  position: absolute;
+  inset: auto 0 0;
   z-index: 1;
-  width: 400%;
-  max-width: none;
-  height: 112%;
-  object-fit: cover;
-  object-position: var(--doctor-position) bottom;
-  transform: translateY(6%);
+  width: 100%;
+  height: 98%;
+  object-fit: contain;
+  object-position: center bottom;
   filter: saturate(0.96) sepia(0.04);
+  pointer-events: none;
+  transition: filter 0.25s ease;
 }
 
-.doctor-body {
-  padding: 20px;
+.team-hotspot,
+.team-dim {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--zone-left);
+  width: 25%;
 }
 
-.doctor-index {
-  display: block;
-  margin-bottom: 10px;
-  color: #e4a876;
-  font-size: 11px;
-  letter-spacing: 0.1em;
+.team-hotspot {
+  z-index: 4;
+  cursor: pointer;
 }
 
-.doctor-name {
-  margin-bottom: 4px;
+.team-dim {
+  z-index: 2;
+  background: rgba(46, 35, 24, 0.36);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s ease;
+}
+
+.team-dim.dimmed {
+  opacity: 1;
+}
+
+.team-name-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  border-top: 1px solid rgba(251, 245, 234, 0.12);
+  padding-top: 22px;
+}
+
+.team-name {
+  display: grid;
+  gap: 5px;
+  color: rgba(251, 245, 234, 0.48);
+  transition: color 0.25s ease, opacity 0.25s ease, transform 0.25s var(--ease);
+}
+
+.team-name span {
   font-family: var(--font-display);
-  font-size: 22px;
+  font-size: clamp(22px, 2.2vw, 34px);
+  line-height: 1;
 }
 
-.doctor-role {
-  margin-bottom: 12px;
-  color: rgba(251, 245, 234, 0.55);
-  font-size: 13px;
+.team-name small {
+  color: rgba(251, 245, 234, 0.42);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-.doctor-bio {
-  min-height: 96px;
-  color: rgba(251, 245, 234, 0.72);
-  font-size: 13px;
-  line-height: 1.65;
+.team-name:hover,
+.team-name.active {
+  color: var(--cream);
+  transform: translateY(-2px);
 }
 
-.doctor-cta,
+.team-name:hover small,
+.team-name.active small {
+  color: #e4a876;
+}
+
 .modal-submit {
   width: 100%;
   min-height: 42px;
-  border: 1px solid rgba(251, 245, 234, 0.28);
+  border: 1px solid var(--terra);
   border-radius: 999px;
-  background: transparent;
+  background: var(--terra);
   color: var(--cream);
   font-size: 13px;
   font-weight: 600;
   transition: background 0.25s ease, border-color 0.25s ease;
 }
 
-.doctor-cta:hover,
 .modal-submit:hover {
-  border-color: var(--terra);
-  background: var(--terra);
+  border-color: var(--terra-deep);
+  background: var(--terra-deep);
 }
 
 .trust {
@@ -781,6 +799,47 @@ section:not(.hero) {
 .footer-bottom a {
   display: inline;
   margin: 0;
+}
+
+.micro-body {
+  min-height: 100svh;
+  background:
+    radial-gradient(circle at 74% 20%, rgba(184, 83, 47, 0.14), transparent 34%),
+    radial-gradient(circle at 18% 18%, rgba(251, 245, 234, 0.9), transparent 32%),
+    var(--sand);
+}
+
+.micro-site {
+  width: min(900px, calc(100% - 48px));
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0 auto;
+  padding: 90px 0;
+}
+
+.micro-site .logo {
+  position: absolute;
+  top: 28px;
+}
+
+.micro-site h1 {
+  max-width: 820px;
+}
+
+.micro-site p {
+  max-width: 620px;
+  color: var(--ink-soft);
+  font-size: clamp(18px, 2vw, 25px);
+  line-height: 1.55;
+}
+
+.micro-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
 }
 
 .modal-overlay {
@@ -1031,17 +1090,14 @@ section:not(.hero) {
   }
 
   .doctor-panel {
-    display: flex;
-    gap: 14px;
     overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    padding-bottom: 12px;
+    padding-bottom: 18px;
   }
 
-  .doctor-card {
-    width: min(82vw, 360px);
-    flex: 0 0 auto;
-    scroll-snap-align: start;
+  .team-stage,
+  .team-name-row {
+    width: 820px;
+    max-width: none;
   }
 
   .trust-bg {
@@ -1085,6 +1141,22 @@ section:not(.hero) {
 
   .team-intro p {
     font-size: 17px;
+  }
+
+  .team-stage {
+    min-height: 420px;
+  }
+
+  .team-name-row {
+    gap: 12px;
+  }
+
+  .team-name span {
+    font-size: 24px;
+  }
+
+  .team-name small {
+    font-size: 10px;
   }
 
   .about-media img,
