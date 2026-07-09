@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>tüdd | Consultorio dental boutique</title>
+    <meta
+      name="description"
+      content="Consultorio dental boutique con triaje inteligente, cuatro doctoras independientes y agenda de citas."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header" aria-label="Navegacion principal">
+      <a class="brand" href="#inicio" aria-label="tüdd inicio">tüdd</a>
+      <nav class="nav-links">
+        <a href="#asistente">Asistente</a>
+        <a href="#consultorio">Consultorio</a>
+        <a href="#doctoras">Doctoras</a>
+        <a href="#confianza">Confianza</a>
+        <a href="#contacto">Contacto</a>
+      </nav>
+      <a class="header-cta" href="#agenda">Agendar</a>
+    </header>
+
+    <main>
+      <section class="hero" id="inicio" aria-labelledby="hero-title">
+        <div class="hero-media" aria-hidden="true"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <p class="eyebrow">Consultorio dental boutique</p>
+          <h1 id="hero-title">Una bienvenida clara antes de elegir a tu doctora.</h1>
+          <p class="hero-copy">
+            tüdd reúne a cuatro doctoras independientes en un espacio sereno,
+            preciso y humano. El asistente te orienta en menos de un minuto.
+          </p>
+        </div>
+
+        <section class="triage-card" id="asistente" aria-labelledby="triage-title">
+          <div class="triage-topline">
+            <span>Asistente tüdd</span>
+            <span id="triage-step">01 / 04</span>
+          </div>
+          <h2 id="triage-title">Cuéntanos qué necesitas.</h2>
+          <p id="triage-question">¿Qué describe mejor tu motivo de consulta?</p>
+
+          <div class="option-grid" id="triage-options"></div>
+
+          <div class="triage-actions">
+            <button class="ghost-button" id="triage-back" type="button">Volver</button>
+            <button class="dark-button" id="triage-reset" type="button">Reiniciar</button>
+          </div>
+
+          <div class="triage-result" id="triage-result" hidden>
+            <span class="result-kicker">Ruta sugerida</span>
+            <h3 id="result-doctor"></h3>
+            <p id="result-copy"></p>
+            <a class="dark-button" href="#agenda" id="result-book">Agendar con ella</a>
+          </div>
+        </section>
+      </section>
+
+      <section class="intro-band" aria-label="Resumen de servicios">
+        <div>
+          <span class="stat">4</span>
+          <p>doctoras independientes</p>
+        </div>
+        <div>
+          <span class="stat">20 min</span>
+          <p>primera orientacion</p>
+        </div>
+        <div>
+          <span class="stat">1</span>
+          <p>espacio coordinado</p>
+        </div>
+      </section>
+
+      <section class="section about" id="consultorio">
+        <div class="section-heading">
+          <p class="eyebrow">El consultorio</p>
+          <h2>Cuidado dental con calma, criterio y una agenda bien resuelta.</h2>
+        </div>
+        <div class="about-grid">
+          <div class="about-image">
+            <img src="public/assets/tudd-clinic.png" alt="Recepcion minimal de consultorio dental tüdd" />
+          </div>
+          <div class="about-copy">
+            <p>
+              tüdd esta pensado para recibir pacientes con necesidades distintas
+              sin forzarlos a elegir desde la incertidumbre. El triaje inicial
+              ordena sintomas, objetivo estetico, urgencia y disponibilidad para
+              sugerir una doctora compatible.
+            </p>
+            <div class="service-list">
+              <article>
+                <span>01</span>
+                <h3>Diagnostico y prevencion</h3>
+                <p>Revision, limpieza, molestias leves y plan de cuidado.</p>
+              </article>
+              <article>
+                <span>02</span>
+                <h3>Estetica dental</h3>
+                <p>Blanqueamiento, resinas, carillas y armonia de sonrisa.</p>
+              </article>
+              <article>
+                <span>03</span>
+                <h3>Rehabilitacion</h3>
+                <p>Coronas, restauraciones, dolor al morder y piezas fracturadas.</p>
+              </article>
+              <article>
+                <span>04</span>
+                <h3>Atencion familiar</h3>
+                <p>Ninos, adolescentes, seguimiento y habitos de higiene.</p>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section doctors" id="doctoras">
+        <div class="section-heading">
+          <p class="eyebrow">Doctoras</p>
+          <h2>Cuatro perfiles para cuatro formas de empezar.</h2>
+        </div>
+        <div class="doctor-grid" id="doctor-grid"></div>
+      </section>
+
+      <section class="trust" id="confianza">
+        <div class="trust-image">
+          <img src="public/assets/tudd-trust.png" alt="Pacientes sonriendo en ambiente calido" />
+        </div>
+        <div class="trust-copy">
+          <p class="eyebrow">Confianza</p>
+          <h2>Sonrisas reales, seguimiento claro y un trato que baja la ansiedad.</h2>
+          <div class="review-grid">
+            <article>
+              <div class="stars">★★★★★</div>
+              <p>“Llegue sin saber con quien agendar. El asistente me llevo directo a la consulta correcta.”</p>
+              <span>Mariana L.</span>
+            </article>
+            <article>
+              <div class="stars">★★★★★</div>
+              <p>“El espacio se siente privado, limpio y cero intimidante. Todo fue puntual.”</p>
+              <span>Rocio G.</span>
+            </article>
+            <article>
+              <div class="stars">★★★★★</div>
+              <p>“Me explicaron opciones sin presion. Termine con un plan que si entendi.”</p>
+              <span>Daniel P.</span>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section booking" id="agenda">
+        <div class="section-heading">
+          <p class="eyebrow">Agenda</p>
+          <h2>Reserva una cita de orientacion.</h2>
+        </div>
+        <form class="booking-form" id="booking-form">
+          <label>
+            Nombre
+            <input name="name" type="text" placeholder="Tu nombre" required />
+          </label>
+          <label>
+            Telefono o WhatsApp
+            <input name="phone" type="tel" placeholder="+52..." required />
+          </label>
+          <label>
+            Doctora
+            <select name="doctor" id="doctor-select" required></select>
+          </label>
+          <label>
+            Fecha ideal
+            <input name="date" type="date" required />
+          </label>
+          <label>
+            Horario
+            <select name="time" required>
+              <option value="">Selecciona</option>
+              <option>09:00</option>
+              <option>11:30</option>
+              <option>14:00</option>
+              <option>17:30</option>
+            </select>
+          </label>
+          <label class="wide">
+            Motivo
+            <textarea name="message" placeholder="Cuéntanos brevemente qué te gustaría resolver"></textarea>
+          </label>
+          <button class="dark-button wide" type="submit">Solicitar cita</button>
+          <p class="form-note" id="form-note" role="status"></p>
+        </form>
+      </section>
+
+      <section class="contact" id="contacto">
+        <div>
+          <p class="eyebrow">Contacto</p>
+          <h2>tüdd</h2>
+          <p>Av. Horacio 1855, Polanco, Ciudad de Mexico</p>
+          <p>hola@tudd.mx · +52 55 4100 0921</p>
+        </div>
+        <div class="contact-card">
+          <h3>Horarios</h3>
+          <p>Lunes a viernes · 9:00 a 19:00</p>
+          <p>Sabado · 9:00 a 14:00</p>
+        </div>
+        <div class="contact-card">
+          <h3>Privacidad</h3>
+          <p>
+            Tus respuestas se usan solo para orientar la cita inicial. La valoracion
+            clinica definitiva siempre ocurre con la doctora asignada.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <a class="brand" href="#inicio">tüdd</a>
+      <div class="footer-links">
+        <a href="#consultorio">Consultorio</a>
+        <a href="#doctoras">Doctoras</a>
+        <a href="#agenda">Agenda</a>
+        <a href="#contacto">Privacidad</a>
+      </div>
+      <p>© 2026 tüdd. Consultorio dental independiente.</p>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
