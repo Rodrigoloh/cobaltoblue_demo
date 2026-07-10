@@ -1,5 +1,6 @@
 const CLINIC_WHATSAPP = process.env.CLINIC_WHATSAPP_TO || "528182085411";
-const CLINIC_EMAIL = process.env.CLINIC_EMAIL || "hola@tudd.mx";
+const CLINIC_EMAIL = process.env.CLINIC_EMAIL || "";
+const WHATSAPP_SENDER_NUMBER = process.env.WHATSAPP_SENDER_NUMBER || "";
 
 function sendJson(response, statusCode, payload) {
   response.statusCode = statusCode;
@@ -15,6 +16,10 @@ function normalizePhone(value) {
   if (digits.length > 10) return digits;
 
   return "";
+}
+
+function samePhone(left, right) {
+  return normalizePhone(left) === normalizePhone(right);
 }
 
 function buildMessage(booking) {
@@ -105,19 +110,24 @@ async function sendEmail(booking) {
     </div>
   `;
 
+  const payload = {
+    from,
+    to: [booking.email],
+    subject,
+    html
+  };
+
+  if (CLINIC_EMAIL && CLINIC_EMAIL !== booking.email) {
+    payload.bcc = [CLINIC_EMAIL];
+  }
+
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${apiKey}`,
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({
-      from,
-      to: [booking.email],
-      bcc: [CLINIC_EMAIL],
-      subject,
-      html
-    })
+    body: JSON.stringify(payload)
   });
 
   const data = await response.json().catch(() => ({}));
@@ -164,9 +174,12 @@ module.exports = async function handler(request, response) {
 
     const jobs = [
       ["whatsapp_paciente", sendWhatsApp(patientPhone, patientMessage)],
-      ["whatsapp_consultorio", sendWhatsApp(CLINIC_WHATSAPP, clinicMessage)],
       ["correo_paciente", sendEmail({ ...booking, phone: patientPhone })]
     ];
+
+    if (CLINIC_WHATSAPP && !samePhone(CLINIC_WHATSAPP, WHATSAPP_SENDER_NUMBER)) {
+      jobs.push(["whatsapp_consultorio", sendWhatsApp(CLINIC_WHATSAPP, clinicMessage)]);
+    }
 
     const settled = await Promise.allSettled(jobs.map((job) => job[1]));
     const results = settled.map((result, index) => ({
