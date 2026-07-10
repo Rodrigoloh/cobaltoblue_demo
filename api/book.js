@@ -115,6 +115,13 @@ module.exports = async function handler(request, response) {
   }
 
   try {
+    if (!process.env.WHATSAPP_TOKEN || !process.env.WHATSAPP_PHONE_NUMBER_ID) {
+      return sendJson(response, 503, {
+        ok: false,
+        error: "Faltan variables de entorno de WhatsApp en Vercel"
+      });
+    }
+
     const booking = typeof request.body === "string" ? JSON.parse(request.body) : request.body || {};
     const required = ["doctor", "role", "date", "time", "name", "email", "phone"];
     const missing = required.filter((field) => !String(booking[field] || "").trim());
