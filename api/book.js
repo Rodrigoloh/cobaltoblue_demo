@@ -196,6 +196,19 @@ module.exports = async function handler(request, response) {
     const errors = results
       .filter((result) => result.status === "rejected")
       .map((result) => `${result.name}: ${result.error}`);
+    const emailResult = results.find((result) => result.name === "correo_paciente");
+
+    if (!emailResult || emailResult.status !== "fulfilled" || emailResult.value?.skipped) {
+      return sendJson(response, 502, {
+        ok: false,
+        error:
+          emailResult?.error ||
+          "No se pudo enviar el correo de confirmacion. Revisa RESEND_API_KEY y MAIL_FROM en Vercel.",
+        sent: sent.map((result) => result.name),
+        skipped,
+        warnings: errors
+      });
+    }
 
     if (!sent.length) {
       return sendJson(response, 502, {
