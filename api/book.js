@@ -30,6 +30,15 @@ function buildMessage(booking) {
   ].join("\n");
 }
 
+function escapeHtml(value) {
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 async function sendWhatsApp(to, message) {
   const token = process.env.WHATSAPP_TOKEN;
   const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
@@ -72,16 +81,27 @@ async function sendEmail(booking) {
     return { channel: "email", skipped: true };
   }
 
-  const subject = "Solicitud de cita recibida en tüdd";
+  const safeName = escapeHtml(booking.name);
+  const safeDoctor = escapeHtml(booking.doctor);
+  const safeRole = escapeHtml(booking.role);
+  const safeDate = escapeHtml(booking.date);
+  const safeTime = escapeHtml(booking.time);
+  const subject = `Bienvenida a tüdd, ${booking.name}`;
   const html = `
-    <div style="font-family:Inter,Arial,sans-serif;color:#2e2318;line-height:1.55">
-      <h1 style="font-family:Georgia,serif;font-weight:400">Solicitud de cita recibida</h1>
-      <p>Hola ${booking.name}, recibimos tu solicitud en tüdd.</p>
-      <p><strong>Doctora:</strong> ${booking.doctor}<br>
-      <strong>Especialidad:</strong> ${booking.role}<br>
-      <strong>Dia:</strong> ${booking.date}<br>
-      <strong>Hora:</strong> ${booking.time}</p>
-      <p>Te contactaremos para confirmar disponibilidad final.</p>
+    <div style="margin:0;background:#fbf5ea;padding:32px 18px;font-family:Inter,Arial,sans-serif;color:#2e2318;line-height:1.6">
+      <div style="max-width:620px;margin:0 auto;background:#f3e8d8;border:1px solid rgba(46,35,24,.14);padding:34px">
+        <p style="margin:0 0 28px;font-size:26px;letter-spacing:.06em;font-weight:300">tüdd</p>
+        <h1 style="margin:0 0 18px;font-family:Georgia,serif;font-weight:400;font-size:34px;line-height:1.08">Hola ${safeName}, bienvenida a tüdd.</h1>
+        <p style="margin:0 0 24px;color:#4a3a2a">Tu cita quedó registrada con nuestro equipo. Te esperamos con calma, escucha y el cuidado clínico que tu sonrisa merece.</p>
+        <div style="border-top:1px solid rgba(46,35,24,.16);border-bottom:1px solid rgba(46,35,24,.16);padding:18px 0;margin:24px 0">
+          <p style="margin:0 0 10px"><strong>Doctora:</strong> ${safeDoctor}</p>
+          <p style="margin:0 0 10px"><strong>Especialidad:</strong> ${safeRole}</p>
+          <p style="margin:0 0 10px"><strong>Día:</strong> ${safeDate}</p>
+          <p style="margin:0"><strong>Hora:</strong> ${safeTime}</p>
+        </div>
+        <p style="margin:0 0 18px;color:#4a3a2a">Si necesitamos ajustar algún detalle de disponibilidad, nos pondremos en contacto contigo antes de tu visita.</p>
+        <p style="margin:0;color:#8c7a63;font-size:13px">Av Paseo de los Leones 2020, Cumbres 3o. Sector, Plaza Altezza piso 1, Monterrey, N.L.</p>
+      </div>
     </div>
   `;
 
