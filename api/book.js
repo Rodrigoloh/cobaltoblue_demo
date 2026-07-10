@@ -1,38 +1,9 @@
-const CLINIC_WHATSAPP = process.env.CLINIC_WHATSAPP_TO || "528182085411";
 const CLINIC_EMAIL = process.env.CLINIC_EMAIL || "";
-const WHATSAPP_SENDER_NUMBER = process.env.WHATSAPP_SENDER_NUMBER || "";
 
 function sendJson(response, statusCode, payload) {
   response.statusCode = statusCode;
   response.setHeader("Content-Type", "application/json; charset=utf-8");
   response.end(JSON.stringify(payload));
-}
-
-function normalizePhone(value) {
-  const digits = String(value || "").replace(/\D/g, "");
-
-  if (digits.length === 10) return `52${digits}`;
-  if (digits.length === 12 && digits.startsWith("52")) return digits;
-  if (digits.length > 10) return digits;
-
-  return "";
-}
-
-function samePhone(left, right) {
-  return normalizePhone(left) === normalizePhone(right);
-}
-
-function buildMessage(booking) {
-  return [
-    "Hola, tu solicitud de cita en tüdd fue recibida.",
-    "",
-    `Doctora: ${booking.doctor}`,
-    `Especialidad: ${booking.role}`,
-    `Dia: ${booking.date}`,
-    `Hora: ${booking.time}`,
-    "",
-    "Te contactaremos para confirmar disponibilidad final."
-  ].join("\n");
 }
 
 function escapeHtml(value) {
@@ -42,40 +13,6 @@ function escapeHtml(value) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
-}
-
-async function sendWhatsApp(to, message) {
-  const token = process.env.WHATSAPP_TOKEN;
-  const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
-
-  if (!token || !phoneNumberId || !to) {
-    return { channel: "whatsapp", skipped: true };
-  }
-
-  const response = await fetch(`https://graph.facebook.com/v20.0/${phoneNumberId}/messages`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      messaging_product: "whatsapp",
-      to,
-      type: "text",
-      text: {
-        preview_url: false,
-        body: message
-      }
-    })
-  });
-
-  const data = await response.json().catch(() => ({}));
-
-  if (!response.ok) {
-    throw new Error(data?.error?.message || "No se pudo enviar WhatsApp");
-  }
-
-  return { channel: "whatsapp", skipped: false, data };
 }
 
 async function sendEmail(booking) {
@@ -153,33 +90,7 @@ module.exports = async function handler(request, response) {
       return sendJson(response, 400, { ok: false, error: "Faltan datos de la cita", missing });
     }
 
-    const patientPhone = normalizePhone(booking.phone);
-
-    if (!patientPhone) {
-      return sendJson(response, 400, { ok: false, error: "Telefono no valido" });
-    }
-
-    const patientMessage = buildMessage(booking);
-    const clinicMessage = [
-      "Nueva solicitud de cita en tüdd",
-      "",
-      `Paciente: ${booking.name}`,
-      `Telefono: +${patientPhone}`,
-      `Correo: ${booking.email}`,
-      `Doctora: ${booking.doctor}`,
-      `Especialidad: ${booking.role}`,
-      `Dia: ${booking.date}`,
-      `Hora: ${booking.time}`
-    ].join("\n");
-
-    const jobs = [
-      ["whatsapp_paciente", sendWhatsApp(patientPhone, patientMessage)],
-      ["correo_paciente", sendEmail({ ...booking, phone: patientPhone })]
-    ];
-
-    if (CLINIC_WHATSAPP && !samePhone(CLINIC_WHATSAPP, WHATSAPP_SENDER_NUMBER)) {
-      jobs.push(["whatsapp_consultorio", sendWhatsApp(CLINIC_WHATSAPP, clinicMessage)]);
-    }
+    const jobs = [["correo_paciente", sendEmail(booking)]];
 
     const settled = await Promise.allSettled(jobs.map((job) => job[1]));
     const results = settled.map((result, index) => ({
