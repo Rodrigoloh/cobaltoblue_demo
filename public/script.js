@@ -76,6 +76,7 @@ const modalContent = document.querySelector("#modalContent");
 const reviewStack = document.querySelector("[data-parallax-reviews]");
 
 let bookingState = {};
+let activeReview = 0;
 
 function renderDoctors() {
   doctorTrack.innerHTML = `
@@ -139,17 +140,14 @@ function renderDoctors() {
 }
 
 function renderReviews() {
-  reviewGrid.innerHTML = reviews
-    .map(
-      (review) => `
-        <article class="review-card">
-          <div class="review-stars">★★★★★</div>
-          <p>${review.text}</p>
-          <span>${review.name} · ${review.meta}</span>
-        </article>
-      `
-    )
-    .join("");
+  const review = reviews[activeReview];
+  reviewGrid.innerHTML = `
+    <article class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <p>${review.text}</p>
+      <span>${review.name} · ${review.meta}</span>
+    </article>
+  `;
 }
 
 function matchDoctor(text) {
@@ -286,9 +284,9 @@ function onScroll() {
   const y = window.scrollY;
   const factor = Math.min(y / window.innerHeight, 1);
   siteHeader.classList.toggle("scrolled", y > 30);
-  heroPhoto.style.transform = `translateY(${y * 0.12}px) scale(${1 + factor * 0.03})`;
-  heroInner.style.transform = `translateY(${factor * 34}px)`;
-  heroInner.style.opacity = `${1 - factor * 0.72}`;
+  heroPhoto.style.transform = `translateY(${y * 0.28}px) scale(${1 + factor * 0.1})`;
+  heroInner.style.transform = `translateY(${factor * 86}px) scale(${1 - factor * 0.05})`;
+  heroInner.style.opacity = `${1 - factor * 0.88}`;
 
   if (reviewStack) {
     const rect = reviewStack.getBoundingClientRect();
@@ -344,3 +342,8 @@ document.querySelectorAll(".reveal").forEach((element) => observer.observe(eleme
 
 renderDoctors();
 renderReviews();
+
+window.setInterval(() => {
+  activeReview = (activeReview + 1) % reviews.length;
+  renderReviews();
+}, 4200);

@@ -91,7 +91,7 @@ img {
 .main-nav {
   display: flex;
   align-items: center;
-  gap: 34px;
+  gap: 24px;
   color: var(--ink-soft);
   font-size: 13px;
 }
@@ -129,6 +129,38 @@ img {
 .btn-light {
   background: var(--cream);
   color: var(--ink);
+}
+
+.nav-pill {
+  width: 74px;
+  height: 74px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(46, 35, 24, 0.28);
+  border-radius: 50%;
+  background: rgba(251, 245, 234, 0.34);
+  color: var(--ink);
+  padding: 0 10px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.08;
+  text-transform: uppercase;
+  backdrop-filter: blur(18px);
+  box-shadow: 0 14px 38px rgba(46, 35, 24, 0.1);
+  transition: transform 0.25s var(--ease), background 0.25s ease, border-color 0.25s ease;
+}
+
+.nav-pill:hover {
+  border-color: var(--ink);
+  background: rgba(251, 245, 234, 0.5);
+  transform: translateY(-2px);
+}
+
+.nav-pill-emergency {
+  border-color: rgba(184, 35, 35, 0.72);
+  color: #9e2720;
 }
 
 .menu-toggle {
@@ -249,7 +281,7 @@ h1 em {
 
 .assistant-embed {
   max-width: 640px;
-  margin-top: 34px;
+  margin-top: 18px;
 }
 
 .ask-line {
@@ -338,7 +370,6 @@ section:not(.hero) {
   padding: clamp(84px, 10vw, 132px) 0;
 }
 
-.about-grid,
 .team-intro-grid,
 .trust-grid,
 .contact-grid {
@@ -348,7 +379,11 @@ section:not(.hero) {
 }
 
 .about-grid {
-  grid-template-columns: 0.9fr 1.1fr;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  align-items: stretch;
+  min-height: 760px;
 }
 
 .about-copy h2,
@@ -374,42 +409,70 @@ section:not(.hero) {
   line-height: 1.35;
 }
 
-.stat-grid {
+.about-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: var(--sand);
+  padding: clamp(72px, 9vw, 132px) clamp(28px, 7vw, 96px);
+}
+
+.about-media {
+  min-height: 760px;
+}
+
+.about-media img {
+  width: 100%;
+  height: 100%;
+  min-height: 760px;
+  border-radius: 0;
+  object-fit: cover;
+}
+
+.stats-banner {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
+  min-height: 230px;
   overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: var(--line);
-  gap: 1px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: var(--cream);
 }
 
-.stat-grid div {
-  min-height: 118px;
+.stats-banner div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-right: 1px solid var(--line);
+  padding: clamp(28px, 5vw, 72px);
+  transition: background 0.35s ease;
+}
+
+.stats-banner div:hover {
   background: var(--sand-2);
-  padding: 22px;
 }
 
-.stat-grid strong {
+.stats-banner div:last-child {
+  border-right: 0;
+}
+
+.stats-banner strong {
   display: block;
   color: var(--ink);
   font-family: var(--font-display);
-  font-size: 38px;
+  font-size: clamp(54px, 8vw, 110px);
   font-weight: 400;
   line-height: 1;
 }
 
-.stat-grid span {
+.stats-banner span {
   display: block;
-  margin-top: 10px;
+  margin-top: 14px;
   color: var(--taupe);
-  font-size: 12.5px;
-}
-
-.about-media img {
-  min-height: 520px;
-  border-radius: 28px;
-  object-fit: cover;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .team-intro {
@@ -445,8 +508,10 @@ section:not(.hero) {
 
 .doctors {
   overflow: hidden;
-  background: var(--ink);
+  background:
+    linear-gradient(180deg, var(--ink) 0%, var(--ink) 22%, rgba(46, 35, 24, 0.96) 42%, rgba(46, 35, 24, 0.84) 100%);
   color: var(--cream);
+  padding-bottom: 0 !important;
 }
 
 .doctors .eyebrow {
@@ -458,28 +523,24 @@ section:not(.hero) {
   align-items: flex-end;
   justify-content: space-between;
   gap: 28px;
-  margin-bottom: 54px;
-}
-
-.doctors-head p {
-  max-width: 460px;
-  margin-bottom: 0;
-  color: rgba(251, 245, 234, 0.62);
+  margin-bottom: 28px;
 }
 
 .doctor-panel {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
   overflow: visible;
 }
 
 .team-stage {
   position: relative;
   overflow: hidden;
-  min-height: clamp(420px, 48vw, 680px);
+  min-height: clamp(420px, 48vw, 720px);
   border-radius: 0;
   background:
+    linear-gradient(180deg, var(--ink) 0%, rgba(46, 35, 24, 0.72) 18%, rgba(184, 83, 47, 0.14) 100%),
     radial-gradient(circle at 20% 18%, rgba(251, 245, 234, 0.24), transparent 34%),
-    radial-gradient(circle at 78% 22%, rgba(184, 83, 47, 0.16), transparent 32%),
-    linear-gradient(135deg, rgba(251, 245, 234, 0.12), rgba(251, 245, 234, 0.02) 42%, rgba(184, 83, 47, 0.12));
+    radial-gradient(circle at 78% 22%, rgba(184, 83, 47, 0.18), transparent 32%);
 }
 
 .team-stage::before {
@@ -534,7 +595,9 @@ section:not(.hero) {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 18px;
   border-top: 1px solid rgba(251, 245, 234, 0.12);
-  padding-top: 22px;
+  width: min(1180px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 22px 0 64px;
 }
 
 .team-name {
@@ -660,14 +723,7 @@ section:not(.hero) {
   box-shadow: 0 26px 70px rgba(46, 35, 24, 0.22);
   padding: 22px;
   backdrop-filter: blur(16px);
-}
-
-.review-card:nth-child(2) {
-  margin-left: auto;
-}
-
-.review-card:nth-child(3) {
-  margin-left: 8%;
+  transition: opacity 0.35s ease, transform 0.35s ease;
 }
 
 .review-stars {
@@ -723,7 +779,7 @@ section:not(.hero) {
 }
 
 .social-actions {
-  display: flex;
+  display: inline-flex;
   flex-wrap: wrap;
   gap: 10px;
   margin-top: 28px;
@@ -797,8 +853,21 @@ section:not(.hero) {
 }
 
 .footer-bottom a {
-  display: inline;
+  display: inline-flex;
   margin: 0;
+}
+
+.footer-socials {
+  display: inline-flex;
+  gap: 10px;
+}
+
+.footer-socials a {
+  min-height: 38px;
+  align-items: center;
+  border: 1px solid rgba(251, 245, 234, 0.2);
+  border-radius: 999px;
+  padding: 0 14px;
 }
 
 .micro-body {
@@ -1135,8 +1204,18 @@ section:not(.hero) {
   }
 
   .stat-grid,
+  .stats-banner,
   .contact-list div {
     grid-template-columns: 1fr;
+  }
+
+  .stats-banner div {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .stats-banner div:last-child {
+    border-bottom: 0;
   }
 
   .team-intro p {
