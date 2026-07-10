@@ -64,7 +64,6 @@ const siteHeader = document.querySelector("#siteHeader");
 const menuToggle = document.querySelector("#menuToggle");
 const mainNav = document.querySelector("#mainNav");
 const heroPhoto = document.querySelector(".hero-photo");
-const heroInner = document.querySelector("#heroInner");
 const assistantInput = document.querySelector("#assistantInput");
 const assistantResponse = document.querySelector("#assistantResponse");
 const sendBtn = document.querySelector("#sendBtn");
@@ -285,8 +284,6 @@ function onScroll() {
   const factor = Math.min(y / window.innerHeight, 1);
   siteHeader.classList.toggle("scrolled", y > 30);
   heroPhoto.style.transform = `translateY(${y * 0.28}px) scale(${1 + factor * 0.1})`;
-  heroInner.style.transform = `translateY(${factor * 86}px) scale(${1 - factor * 0.05})`;
-  heroInner.style.opacity = `${1 - factor * 0.88}`;
 
   if (reviewStack) {
     const rect = reviewStack.getBoundingClientRect();
