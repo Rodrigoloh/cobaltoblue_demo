@@ -656,6 +656,171 @@ section:not(.hero) {
   object-fit: cover;
 }
 
+.slider {
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  min-height: 680px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: #6b5b50;
+  color: #fff;
+  padding: 0 !important;
+  cursor: none;
+  transition: background 0.6s var(--ease);
+}
+
+.slider__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 40px 56px 20px;
+  flex-shrink: 0;
+}
+
+.slider__menu {
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  background: none;
+  cursor: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  transition: border-color 0.3s ease;
+}
+
+.slider__menu:hover {
+  border-color: rgba(255, 255, 255, 0.8);
+}
+
+.slider__menu span {
+  width: 18px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.slider__label {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.slider__body {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  padding: 0 56px 56px;
+  position: relative;
+}
+
+.slider__left {
+  width: 55%;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  position: relative;
+}
+
+.slider__title {
+  max-width: none;
+  margin: auto 0;
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: clamp(64px, 12.5vw, 178px);
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.02;
+  overflow: hidden;
+  position: relative;
+  text-transform: none;
+}
+
+.slider__title span {
+  display: inline-block;
+  will-change: transform;
+}
+
+.slider__footer {
+  flex-shrink: 0;
+  margin-top: 48px;
+}
+
+.slider__description,
+.slider__location {
+  max-width: 310px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  line-height: 1.6;
+  text-transform: uppercase;
+}
+
+.slider__location {
+  margin-top: 12px;
+}
+
+.slider__right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  pointer-events: auto;
+}
+
+.slider__images {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.slider__slide {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 68%;
+  aspect-ratio: 1.4;
+  overflow: hidden;
+  will-change: transform, filter, opacity;
+  contain: layout style;
+}
+
+.slider__slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.9);
+}
+
+.slider__cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 88px;
+  height: 88px;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 24px;
+  font-weight: 400;
+  pointer-events: none;
+  will-change: transform;
+}
+
 .team-intro {
   background: var(--cream);
   padding-top: 0 !important;
@@ -1386,6 +1551,44 @@ section:not(.hero) {
     margin-left: 0;
   }
 
+  .slider {
+    min-height: 100svh;
+    cursor: auto;
+  }
+
+  .slider__header {
+    padding: 30px 32px 12px;
+  }
+
+  .slider__body {
+    flex-direction: column;
+    padding: 0 32px 40px;
+  }
+
+  .slider__left {
+    width: 100%;
+    z-index: 4;
+  }
+
+  .slider__title {
+    font-size: clamp(58px, 15vw, 132px);
+    margin: 28px 0;
+  }
+
+  .slider__right {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .slider__slide {
+    width: min(620px, 68vw);
+  }
+
+  .slider__cursor {
+    display: none;
+  }
+
   .services-shell {
     min-height: auto;
     padding-top: 104px;
@@ -1456,6 +1659,30 @@ section:not(.hero) {
     grid-template-columns: 34px 1fr;
     gap: 12px;
     padding: 15px 0;
+  }
+
+  .slider__header {
+    padding: 24px 22px 8px;
+  }
+
+  .slider__label {
+    display: none;
+  }
+
+  .slider__body {
+    padding: 0 22px 32px;
+  }
+
+  .slider__title {
+    font-size: clamp(50px, 19vw, 88px);
+  }
+
+  .slider__footer {
+    margin-top: 18px;
+  }
+
+  .slider__slide {
+    width: 78vw;
   }
 
   .team-intro p {

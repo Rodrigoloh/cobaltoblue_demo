@@ -59,26 +59,34 @@ const reviews = [
   }
 ];
 
-const services = [
+const serviceSlidesData = [
   {
-    title: "Ortodoncia",
+    name: "Ortodoncia",
+    color: "#6B5B50",
+    image: "public/assets/service-ortodoncia.png",
     description: "Alineadores, brackets estéticos y seguimiento de mordida con planeación clara.",
-    meta: "01 / Diagnóstico y plan"
+    location: "01 / Diagnóstico y plan"
   },
   {
-    title: "Diseño de sonrisa",
+    name: "Sonrisa",
+    color: "#B8A38A",
+    image: "public/assets/service-diseno-sonrisa.png",
     description: "Blanqueamiento, resinas y carillas pensadas para verse naturales desde cerca.",
-    meta: "02 / Estética conservadora"
+    location: "02 / Estética conservadora"
   },
   {
-    title: "Endodoncia",
+    name: "Endodoncia",
+    color: "#4E676F",
+    image: "public/assets/service-endodoncia.png",
     description: "Atención precisa para dolor, sensibilidad profunda y tratamientos de conducto.",
-    meta: "03 / Alivio y precisión"
+    location: "03 / Alivio y precisión"
   },
   {
-    title: "Odontopediatría",
+    name: "Pediatría",
+    color: "#8BA08A",
+    image: "public/assets/service-odontopediatria.png",
     description: "Primeras visitas, prevención y tratamiento infantil con una experiencia tranquila.",
-    meta: "04 / Cuidado infantil"
+    location: "04 / Cuidado infantil"
   }
 ];
 
@@ -87,12 +95,6 @@ const siteHeader = document.querySelector("#siteHeader");
 const menuToggle = document.querySelector("#menuToggle");
 const mainNav = document.querySelector("#mainNav");
 const heroPhoto = document.querySelector(".hero-photo");
-const serviceSlider = document.querySelector("[data-service-slider]");
-const serviceTitle = document.querySelector("#serviceTitle");
-const serviceDescription = document.querySelector("#serviceDescription");
-const serviceMeta = document.querySelector("#serviceMeta");
-const serviceOptions = document.querySelectorAll("[data-service-index]");
-const serviceSlides = document.querySelectorAll(".service-slide");
 const assistantInput = document.querySelector("#assistantInput");
 const assistantResponse = document.querySelector("#assistantResponse");
 const sendBtn = document.querySelector("#sendBtn");
@@ -106,30 +108,354 @@ const reviewStack = document.querySelector("[data-parallax-reviews]");
 let bookingState = {};
 let activeReview = 0;
 
-function setActiveService(index) {
-  const service = services[index] || services[0];
-  serviceSlider?.setAttribute("data-active-service", String(index));
-  if (serviceTitle) serviceTitle.textContent = service.title;
-  if (serviceDescription) serviceDescription.textContent = service.description;
-  if (serviceMeta) serviceMeta.textContent = service.meta;
+const throttle = (callback, limit) => {
+  let waiting = false;
+  return function (...args) {
+    if (waiting) return;
+    callback.apply(this, args);
+    waiting = true;
+    setTimeout(() => {
+      waiting = false;
+    }, limit);
+  };
+};
 
-  serviceOptions.forEach((option) => {
-    const isActive = Number(option.dataset.serviceIndex) === index;
-    option.classList.toggle("active", isActive);
-    option.setAttribute("aria-selected", String(isActive));
-  });
+const debounce = (callback, wait) => {
+  let timeout;
+  return function (...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => callback.apply(this, args), wait);
+  };
+};
 
-  serviceSlides.forEach((slide, slideIndex) => {
-    slide.classList.toggle("active", slideIndex === index);
-  });
+class ServiceSlider {
+  constructor() {
+    this.current = 0;
+    this.animating = false;
+    this.total = serviceSlidesData.length;
+    this.el = document.querySelector("[data-service-slider]");
+    this.titleEl = document.querySelector(".slider__title");
+    this.imagesEl = document.querySelector(".slider__images");
+    this.descriptionEl = document.querySelector("[data-slider-description]");
+    this.locationEl = document.querySelector("[data-slider-location]");
+    this.slideEls = [];
+    this.currentLine = null;
+    this.cursorVisible = false;
+    this.autoPlayId = null;
+    this.reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (!this.el || !this.titleEl || !this.imagesEl) return;
+
+    if (!window.gsap) {
+      this.titleEl.textContent = serviceSlidesData[0].name;
+      this.setInfo(0);
+      this.imagesEl.innerHTML = `<div class="slider__slide" style="opacity:1;transform:translate(-50%,-50%);filter:none;z-index:3;"><img src="${serviceSlidesData[0].image}" alt="${serviceSlidesData[0].name}" /></div>`;
+      this.el.style.backgroundColor = serviceSlidesData[0].color;
+      return;
+    }
+
+    this.preload();
+    this.setTitle(serviceSlidesData[0].name);
+    this.setInfo(0);
+    gsap.set(this.el, { backgroundColor: serviceSlidesData[0].color });
+    this.buildCarousel();
+    this.buildCursor();
+    this.bind();
+    this.startAutoPlay();
+  }
+
+  preload() {
+    serviceSlidesData.forEach((slide) => {
+      new Image().src = slide.image;
+    });
+  }
+
+  mod(n) {
+    return ((n % this.total) + this.total) % this.total;
+  }
+
+  isInView() {
+    const rect = this.el.getBoundingClientRect();
+    return rect.top < window.innerHeight * 0.74 && rect.bottom > window.innerHeight * 0.26;
+  }
+
+  buildCursor() {
+    this.cursorEl = document.createElement("div");
+    this.cursorEl.className = "slider__cursor";
+    this.cursorEl.textContent = "+";
+    this.cursorEl.setAttribute("aria-hidden", "true");
+    this.el.appendChild(this.cursorEl);
+    gsap.set(this.cursorEl, { xPercent: -50, yPercent: -50, opacity: 0 });
+    this.cursorMoveX = gsap.quickTo(this.cursorEl, "x", { duration: 0.5, ease: "power3" });
+    this.cursorMoveY = gsap.quickTo(this.cursorEl, "y", { duration: 0.5, ease: "power3" });
+  }
+
+  startAutoPlay() {
+    this.stopAutoPlay();
+    this.autoPlayId = setInterval(() => {
+      if (!this.animating && this.isInView()) this.go("next");
+    }, 4200);
+  }
+
+  stopAutoPlay() {
+    if (!this.autoPlayId) return;
+    clearInterval(this.autoPlayId);
+    this.autoPlayId = null;
+  }
+
+  setInfo(index) {
+    const slide = serviceSlidesData[index];
+    if (this.descriptionEl) this.descriptionEl.innerHTML = slide.description;
+    if (this.locationEl) this.locationEl.innerHTML = slide.location;
+  }
+
+  setTitle(text) {
+    this.titleEl.innerHTML = "";
+    const line = document.createElement("div");
+    [...text].forEach((ch) => {
+      const span = document.createElement("span");
+      span.textContent = ch === " " ? "\u00A0" : ch;
+      line.appendChild(span);
+    });
+    this.titleEl.appendChild(line);
+    this.currentLine = line;
+  }
+
+  animateTitle(newText, direction) {
+    const h = this.titleEl.offsetHeight;
+    const dir = direction === "next" ? 1 : -1;
+    const oldLine = this.currentLine;
+    const oldChars = [...oldLine.querySelectorAll("span")];
+
+    this.titleEl.style.height = `${h}px`;
+    oldLine.style.cssText = "position:absolute;top:0;left:0;width:100%";
+
+    const newLine = document.createElement("div");
+    newLine.style.cssText = "position:absolute;top:0;left:0;width:100%";
+    [...newText].forEach((ch) => {
+      const span = document.createElement("span");
+      span.textContent = ch === " " ? "\u00A0" : ch;
+      newLine.appendChild(span);
+    });
+    this.titleEl.appendChild(newLine);
+
+    const newChars = [...newLine.querySelectorAll("span")];
+    gsap.set(newChars, { y: h * dir });
+
+    const duration = this.reducedMotion ? 0.01 : 1;
+    const stagger = this.reducedMotion ? 0 : 0.04;
+    const tl = gsap.timeline({
+      onComplete: () => {
+        oldLine.remove();
+        newLine.style.cssText = "";
+        gsap.set(newChars, { clearProps: "all" });
+        this.titleEl.style.height = "";
+        this.currentLine = newLine;
+      }
+    });
+
+    tl.to(oldChars, { y: -h * dir, stagger, duration, ease: "expo.inOut" }, 0);
+    tl.to(newChars, { y: 0, stagger, duration, ease: "expo.inOut" }, 0);
+    return tl;
+  }
+
+  makeSlide(index) {
+    const slide = document.createElement("div");
+    slide.className = "slider__slide";
+    const img = document.createElement("img");
+    img.src = serviceSlidesData[index].image;
+    img.alt = serviceSlidesData[index].name;
+    img.width = 600;
+    img.height = 420;
+    slide.appendChild(img);
+    return slide;
+  }
+
+  getSlideProps(step) {
+    const h = this.imagesEl.offsetHeight;
+    const absStep = Math.abs(step);
+    const positions = [
+      { x: -0.35, y: -0.95, rot: -30, s: 1.35, b: 16, o: 0 },
+      { x: -0.18, y: -0.5, rot: -15, s: 1.15, b: 8, o: 0.55 },
+      { x: 0, y: 0, rot: 0, s: 1, b: 0, o: 1 },
+      { x: -0.06, y: 0.5, rot: 15, s: 0.75, b: 6, o: 0.55 },
+      { x: -0.12, y: 0.95, rot: 30, s: 0.55, b: 14, o: 0 }
+    ];
+    const props = positions[Math.max(0, Math.min(4, step + 2))];
+
+    return {
+      x: props.x * h,
+      y: props.y * h,
+      rotation: props.rot,
+      scale: props.s,
+      blur: props.b,
+      opacity: props.o,
+      zIndex: absStep === 0 ? 3 : absStep === 1 ? 2 : 1
+    };
+  }
+
+  positionSlide(slide, step) {
+    const props = this.getSlideProps(step);
+    gsap.set(slide, {
+      xPercent: -50,
+      yPercent: -50,
+      x: props.x,
+      y: props.y,
+      rotation: props.rotation,
+      scale: props.scale,
+      opacity: props.opacity,
+      filter: `blur(${props.blur}px)`,
+      zIndex: props.zIndex
+    });
+  }
+
+  buildCarousel() {
+    if (!this.imagesEl.offsetHeight) return;
+    this.imagesEl.innerHTML = "";
+    this.slideEls = [];
+
+    for (let step = -1; step <= 1; step += 1) {
+      const index = this.mod(this.current + step);
+      const slide = this.makeSlide(index);
+      this.imagesEl.appendChild(slide);
+      this.positionSlide(slide, step);
+      this.slideEls.push({ el: slide, step });
+    }
+  }
+
+  animateCarousel(direction) {
+    if (!this.imagesEl.offsetHeight) return gsap.timeline();
+
+    const shift = direction === "next" ? -1 : 1;
+    const enterStep = direction === "next" ? 2 : -2;
+    const newIndex = direction === "next" ? this.mod(this.current + 2) : this.mod(this.current - 2);
+    const newSlide = this.makeSlide(newIndex);
+    this.imagesEl.appendChild(newSlide);
+    this.positionSlide(newSlide, enterStep);
+    this.slideEls.push({ el: newSlide, step: enterStep });
+    this.slideEls.forEach((slide) => {
+      slide.step += shift;
+    });
+
+    const duration = this.reducedMotion ? 0.01 : 1.2;
+    const tl = gsap.timeline({
+      onComplete: () => {
+        this.slideEls = this.slideEls.filter((slide) => {
+          if (Math.abs(slide.step) >= 2) {
+            slide.el.remove();
+            return false;
+          }
+          return true;
+        });
+      }
+    });
+
+    this.slideEls.forEach((slide) => {
+      const props = this.getSlideProps(slide.step);
+      slide.el.style.zIndex = props.zIndex;
+      tl.to(
+        slide.el,
+        {
+          x: props.x,
+          y: props.y,
+          rotation: props.rotation,
+          scale: props.scale,
+          opacity: props.opacity,
+          filter: `blur(${props.blur}px)`,
+          duration,
+          ease: "power3.inOut"
+        },
+        0
+      );
+    });
+
+    return tl;
+  }
+
+  go(direction) {
+    if (this.animating) return;
+    this.animating = true;
+    this.startAutoPlay();
+
+    const nextIndex = direction === "next" ? this.mod(this.current + 1) : this.mod(this.current - 1);
+    const master = gsap.timeline({
+      onComplete: () => {
+        this.current = nextIndex;
+        this.setInfo(nextIndex);
+        this.animating = false;
+      }
+    });
+
+    master.to(
+      this.el,
+      {
+        backgroundColor: serviceSlidesData[nextIndex].color,
+        duration: this.reducedMotion ? 0.01 : 1.2,
+        ease: "power2.inOut"
+      },
+      0
+    );
+    master.add(this.animateTitle(serviceSlidesData[nextIndex].name, direction), 0);
+    master.add(this.animateCarousel(direction), 0);
+  }
+
+  bind() {
+    const onWheel = throttle((event) => {
+      if (this.animating || !this.isInView()) return;
+      event.preventDefault();
+      this.go(event.deltaY > 0 ? "next" : "prev");
+    }, 1300);
+    this.el.addEventListener("wheel", onWheel, { passive: false });
+
+    let touchStartY = 0;
+    this.el.addEventListener("touchstart", (event) => {
+      touchStartY = event.touches[0].clientY;
+    }, { passive: true });
+
+    const onTouchEnd = throttle((event) => {
+      if (this.animating) return;
+      const diff = touchStartY - event.changedTouches[0].clientY;
+      if (Math.abs(diff) < 40) return;
+      this.go(diff > 0 ? "next" : "prev");
+    }, 1300);
+    this.el.addEventListener("touchend", onTouchEnd, { passive: true });
+
+    window.addEventListener("keydown", (event) => {
+      if (this.animating || !this.isInView()) return;
+      if (event.key === "ArrowDown" || event.key === "ArrowRight") this.go("next");
+      if (event.key === "ArrowUp" || event.key === "ArrowLeft") this.go("prev");
+    });
+
+    this.el.addEventListener("mousemove", (event) => {
+      if (!this.cursorVisible) {
+        gsap.to(this.cursorEl, { opacity: 1, duration: 0.3 });
+        this.cursorVisible = true;
+      }
+      this.cursorMoveX(event.clientX);
+      this.cursorMoveY(event.clientY);
+    }, { passive: true });
+
+    this.el.addEventListener("mouseleave", () => {
+      gsap.to(this.cursorEl, { opacity: 0, duration: 0.3 });
+      this.cursorVisible = false;
+    });
+
+    window.addEventListener("resize", debounce(() => {
+      if (!this.animating && this.imagesEl.offsetHeight > 0) {
+        this.slideEls.forEach((slide) => this.positionSlide(slide.el, slide.step));
+      }
+    }, 300), { passive: true });
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "hidden") {
+        this.animating = false;
+        this.stopAutoPlay();
+      } else {
+        this.startAutoPlay();
+      }
+    });
+  }
 }
-
-serviceOptions.forEach((option) => {
-  const activate = () => setActiveService(Number(option.dataset.serviceIndex));
-  option.addEventListener("mouseenter", activate);
-  option.addEventListener("focus", activate);
-  option.addEventListener("click", activate);
-});
 
 function renderDoctors() {
   doctorTrack.innerHTML = `
@@ -441,7 +767,7 @@ const observer = new IntersectionObserver(
 
 document.querySelectorAll(".reveal").forEach((element) => observer.observe(element));
 
-setActiveService(0);
+new ServiceSlider();
 renderDoctors();
 renderReviews();
 
